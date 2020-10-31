@@ -34,3 +34,30 @@ func TestCanOpenFile(t *testing.T) {
 	}
 
 }
+
+func TestCanReadFromFile(t *testing.T) {
+	var openFileStruct openFile
+	name, err := ioutil.TempDir("duplicate_word_remover", "tempDir")
+	tempFile, err := ioutil.TempFile(name, "tempFile")
+
+	if err != nil {
+		t.Error(err)
+	}
+
+	expected := "howyadoin"
+
+	message := []byte(expected)
+
+	err = ioutil.WriteFile(tempFile.Name(), message, 0644)
+
+	actual, err := readFromFile(openFileStruct, tempFile)
+
+	if err != nil {
+		t.Error(err)
+	}
+
+	if actual.contents[0] != expected {
+		t.Errorf("Got %s, expected %s", actual.contents[0], expected)
+	}
+
+}
