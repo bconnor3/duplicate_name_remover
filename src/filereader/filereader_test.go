@@ -2,30 +2,24 @@ package filereader
 
 import (
 	"io/ioutil"
+	"os"
 	"testing"
 )
 
 func TestCanOpenFile(t *testing.T) {
-	name, err := ioutil.TempDir("duplicate_word_remover", "tempDir")
+	tempFile, err := ioutil.TempFile("", "tempFile")
+	defer os.Remove(tempFile.Name())
 
-	tempFile, err := ioutil.TempFile(name, "tempFile")
-
-	if err != nil {
-		t.Error(err)
-	}
+	checkError(err, t)
 
 	message := []byte("howyadoin")
 	err = ioutil.WriteFile(tempFile.Name(), message, 0644)
 
-	if err != nil {
-		t.Error(err)
-	}
+	checkError(err, t)
 
 	file, err := openFileForReading(tempFile.Name())
 
-	if err != nil {
-		t.Error(err)
-	}
+	checkError(err, t)
 
 	stat, err := file.Stat()
 
@@ -36,13 +30,10 @@ func TestCanOpenFile(t *testing.T) {
 }
 
 func TestCanReadFromFile(t *testing.T) {
-	var openFileStruct openFile
-	name, err := ioutil.TempDir("duplicate_word_remover", "tempDir")
-	tempFile, err := ioutil.TempFile(name, "tempFile")
+	tempFile, err := ioutil.TempFile("", "tempFile")
+	defer os.Remove(tempFile.Name())
 
-	if err != nil {
-		t.Error(err)
-	}
+	checkError(err, t)
 
 	expected := "howyadoin"
 
@@ -50,14 +41,46 @@ func TestCanReadFromFile(t *testing.T) {
 
 	err = ioutil.WriteFile(tempFile.Name(), message, 0644)
 
-	actual, err := readFromFile(openFileStruct, tempFile)
+	actual, err := readFromFile(tempFile)
 
+	checkError(err, t)
+
+	if actual[0] != expected {
+		t.Errorf("Got %s, expected %s", actual[0], expected)
+	}
+
+}
+
+func TestCanReadFromMultipleLinesInFile(t *testing.T) {
+	tempFile, err := ioutil.TempFile("", "tempFile")
+	defer os.Remove(tempFile.Name())
+
+	testData := []byte("howdy yall\nhow y'all doin over here\ny'all have a good time, ya hear?")
+
+	err = ioutil.WriteFile(tempFile.Name(), testData, 0644)
+
+	actual, err := readFromFile(tempFile)
+
+	checkError(err, t)
+
+	readError := "Error reading from file"
+
+	if actual[0] != "howdy yall" {
+		t.Error(readError)
+	}
+
+	if actual[1] != "how y'all doin over here" {
+		t.Error(readError)
+	}
+
+	if actual[2] != "y'all have a good time, ya hear?" {
+		t.Error(readError)
+
+	}
+}
+
+func checkError(err error, t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-
-	if actual.contents[0] != expected {
-		t.Errorf("Got %s, expected %s", actual.contents[0], expected)
-	}
-
 }

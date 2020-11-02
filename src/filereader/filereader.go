@@ -2,7 +2,6 @@ package filereader
 
 import (
 	"bufio"
-	"log"
 	"os"
 )
 
@@ -12,20 +11,20 @@ type openFile struct {
 
 func openFileForReading(fileName string) (*os.File, error) {
 	file, err := os.Open(fileName)
-
 	return file, err
 }
 
-func readFromFile(of openFile, file *os.File) (openFile, error) {
+func readFromFile(file *os.File) ([]string, error) {
 	defer file.Close()
+	var readValue []string
 
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
-		of.contents = append(of.contents, scanner.Text())
+		readValue = append(readValue, scanner.Text())
 	}
 
 	if err := scanner.Err(); err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
-	return of, nil
+	return readValue, nil
 }
