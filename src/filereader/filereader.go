@@ -5,12 +5,26 @@ import (
 	"os"
 )
 
-func openFileForReading(fileName string) (*os.File, error) {
+//Interface to be used elsewhere
+type Interface interface{
+	OpenFileForReading(fileName string) (*os.File, error)
+	ReadFromFile(file *os.File) ([]string, error)
+}
+
+//FileReader to be used elsewhere
+type FileReader struct {
+	
+}
+
+
+//OpenFileForReading blah blah blah
+func (fr *FileReader) OpenFileForReading(fileName string) (*os.File, error) {
 	file, err := os.Open(fileName)
 	return file, err
 }
 
-func readFromFile(file *os.File) ([]string, error) {
+//ReadFromFile blah blah
+func (fr *FileReader) ReadFromFile(file *os.File) ([]string, error) {
 	defer file.Close()
 	var readValue []string
 

@@ -6,6 +6,8 @@ import (
 	"testing"
 )
 
+var fileReader FileReader
+
 func TestCanOpenFile(t *testing.T) {
 	tempFile, err := ioutil.TempFile("", "tempFile")
 	defer os.Remove(tempFile.Name())
@@ -17,7 +19,7 @@ func TestCanOpenFile(t *testing.T) {
 
 	checkError(err, t)
 
-	file, err := openFileForReading(tempFile.Name())
+	file, err := fileReader.OpenFileForReading(tempFile.Name())
 
 	checkError(err, t)
 
@@ -41,7 +43,7 @@ func TestCanReadFromFile(t *testing.T) {
 
 	err = ioutil.WriteFile(tempFile.Name(), message, 0644)
 
-	actual, err := readFromFile(tempFile)
+	actual, err := fileReader.ReadFromFile(tempFile)
 
 	checkError(err, t)
 
@@ -59,7 +61,7 @@ func TestCanReadFromMultipleLinesInFile(t *testing.T) {
 
 	err = ioutil.WriteFile(tempFile.Name(), testData, 0644)
 
-	actual, err := readFromFile(tempFile)
+	actual, err := fileReader.ReadFromFile(tempFile)
 
 	checkError(err, t)
 
