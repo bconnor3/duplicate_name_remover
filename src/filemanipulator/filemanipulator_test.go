@@ -38,8 +38,18 @@ func TestCanSortElementsOfATextFile(t *testing.T) {
 
 	checkError(err, t)
 
+	if ffr.openFileForReadingSpy != 1 {
+		t.Error("File was never opened for reading")
+	}
+
+	if ffr.readFromFileSpy != 1 {
+		t.Error("File was never read from")
+	}
+
 	compareStringSlices(actual, expectedData, t)
 }
+
+//todo: create test to remove duplicates from file
 
 func checkError(err error, t *testing.T) {
 	if err != nil {
@@ -47,9 +57,9 @@ func checkError(err error, t *testing.T) {
 	}
 }
 func compareStringSlices(sliceA []string, sliceB []string, t *testing.T) {
-for fileElement := range sliceB {
-	if sliceA[fileElement] != sliceB[fileElement] {
-		t.Error("Function didn't work")
+	for fileElement := range sliceB {
+		if sliceA[fileElement] != sliceB[fileElement] {
+			t.Error("Error: failed to sort file elements")
+		}
 	}
-}
 }

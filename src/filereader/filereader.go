@@ -6,16 +6,24 @@ import (
 )
 
 //Interface to be used elsewhere
-type Interface interface{
+type Interface interface {
 	OpenFileForReading(fileName string) (*os.File, error)
 	ReadFromFile(file *os.File) ([]string, error)
 }
 
-//FileReader to be used elsewhere
-type FileReader struct {
-	
+func returnBiggerNumber(a int, b int) (result int) {
+	if a == b {
+		return
+	} else if a > b {
+		result = a
+	} else {
+		result = b
+	}
+	return
 }
 
+//FileReader to be used elsewhere
+type FileReader struct{}
 
 //OpenFileForReading blah blah blah
 func (fr *FileReader) OpenFileForReading(fileName string) (*os.File, error) {

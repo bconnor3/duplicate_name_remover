@@ -81,6 +81,8 @@ func TestCanReadFromMultipleLinesInFile(t *testing.T) {
 	}
 }
 
+//todo: create test to overwrite file with new []string
+
 func checkError(err error, t *testing.T) {
 	if err != nil {
 		t.Error(err)
